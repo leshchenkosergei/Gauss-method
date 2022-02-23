@@ -65,6 +65,37 @@ def keyboard_read():
     return matrix
 
 
+def file_read():
+    try:
+        file = open("file.txt", 'r')
+    except FileNotFoundError:
+        print("Ошибка, не найден файл")
+        return
+    try:
+        n = int(file.readline())
+    except ValueError:
+        print("Размерность может быть только натуральным числом меньшим или равным 20")
+        return None
+    if n <= 0 or n > 20:
+        print("Размерность может быть только натуральным числом меньшим или равным 20")
+        return None
+    matrix = []
+    for i in file:
+        try:
+            str = list(map(float, i.split()))
+        except ValueError:
+            print("Ошибка, введен недопустимый символ")
+            return None
+        if len(str) != (n + 1):
+            print("Ошибка, обнаружена строка неправильного размера")
+            return None
+        matrix.append(str)
+    if len(matrix) != n:
+        print("Ошибка, размеры матрицы не соотвествую числу n", n)
+        return None
+    return matrix
+
+
 def transform(matrix):
     swap = 1
     for i in range(len(matrix) - 1):
@@ -98,6 +129,7 @@ def get_roots(matrix):
         result[i] = round((matrix[i][len(matrix)] - s) / matrix[i][i], 3)
     return result
 
+
 def get_discrepancy(matrix):
     result = get_roots(matrix)
     discrepancy = []
@@ -108,14 +140,28 @@ def get_discrepancy(matrix):
         discrepancy.append(res - matrix[i][len(matrix)])
     return discrepancy
 
+
 def main_fun():
     print("Введите \"1\" для ввода с клавиатуры, введите \"2\" для чтения из файла")
-    num = input()
-    if num == "1":
-        matrix = keyboard_read()
-        if get_det(matrix) == 0:
-            print("Матрица несовместна")
-            return
+    while True:
+        num = input()
+        if num == "1":
+            matrix = keyboard_read()
+            if get_det(matrix) == 0:
+                print("Матрица несовместна")
+                return
+            break
+        elif num == "2":
+            matrix = file_read()
+            if matrix is None:
+                return
+            if get_det(matrix) == 0:
+                print("Матрица несовместна")
+                return
+            break
+        else:
+            print("Ошибка, повторите попытку")
+            continue
     print("Определитель матрицы равен: " + get_det(matrix).__str__())
     matrix = transform(matrix)
     str_matrix = ""
