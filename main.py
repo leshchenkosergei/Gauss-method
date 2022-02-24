@@ -164,19 +164,12 @@ def main_fun():
             continue
     print("Определитель матрицы равен: " + get_det(matrix).__str__())
     matrix = transform(matrix)
-    str_matrix = ""
-    for i in range(0, len(matrix)):
-        for j in range(0, len(matrix)):
-            str_matrix = str_matrix + matrix[i][j].__str__()
-            if get_count(matrix[i][j]) == 1:
-                str_matrix = str_matrix + "   "
-            elif get_count(matrix[i][j]) == 2:
-                str_matrix = str_matrix + "  "
-            else:
-                str_matrix = str_matrix + " "
-        str_matrix = str_matrix + '\n'
     print("Преобразованная матрица со столбцом B:")
-    print(str_matrix)
+    s = [[str(e) for e in row] for row in matrix]
+    lens = [max(map(len, col)) for col in zip(*s)]
+    fmt = '\t'.join('{{:{}}}'.format(x) for x in lens)
+    table = [fmt.format(*row) for row in s]
+    print('\n'.join(table))
     result = get_roots(matrix)
     print("Вектор неизвестных:")
     for i in range(0, len(matrix)):
